@@ -6,7 +6,6 @@
 #import <CoreText/CoreText.h>
 #import "BLTextView.h"
 #import "BLPointsPath.h"
-#import "BLEllipsePath.h"
 
 @implementation BLTextView
 

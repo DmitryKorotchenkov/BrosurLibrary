@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) BLGradientColor *backgroundGradient;
 
-@property (nonatomic, strong)
+// array of
+@property (nonatomic, strong) NSArray *drawingObjects;
 
 @end

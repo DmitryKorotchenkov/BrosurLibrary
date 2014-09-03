@@ -5,15 +5,36 @@
 
 #import "BLView.h"
 #import "BLGradientColor.h"
+#import "BLDrawingObject.h"
 
 
 @implementation BLView
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        BLDrawingObjectCircle *circle = [BLDrawingObjectCircle circleWithRect:CGRectMake(50, 50, 100, 100) width:10];
+
+        CGFloat startX = CGRectGetMinX(circle.rect);
+        CGFloat startY = CGRectGetMinY(circle.rect);
+        CGFloat endX = CGRectGetMaxX(circle.rect);
+        CGFloat endY = CGRectGetMaxY(circle.rect);
+//        circle.gradientColor = [BLGradientColor colorWithStartColor:[UIColor redColor] endColor:[UIColor blueColor] startPoint:CGPointMake(startX, startY) endPoint:CGPointMake(endX, endY)];
+        circle.fillColor = [UIColor redColor];
+        circle.strokeColor = [UIColor greenColor];
+
+        self.drawingObjects = @[circle];
+    }
+
+    return self;
+}
+
+
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
 
+    CGContextRef context = UIGraphicsGetCurrentContext();
     if (self.backgroundGradient) {
-        CGContextRef context = UIGraphicsGetCurrentContext();
         size_t num_locations = 2;
         CGFloat locations[2] = {0.0, 1.0};
 
@@ -31,6 +52,10 @@
         CGContextDrawLinearGradient(context, myGradient, self.backgroundGradient.startPoint, self.backgroundGradient.endPoint, 0);
         CGColorSpaceRelease(myColorspace);
         CGGradientRelease(myGradient);
+    }
+
+    for (BLDrawingObject *object in self.drawingObjects) {
+        [object drawInContext:context];
     }
 }
 
