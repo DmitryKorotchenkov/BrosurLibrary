@@ -22,13 +22,13 @@
 - (BOOL)needDrawGradient;
 @end
 
-@interface BLDrawingObjectCircle :BLDrawingObject
+@interface BLDrawingObjectEllipse :BLDrawingObject
 
 @property (nonatomic) CGRect rect;
 
-- (instancetype)initWithRect:(CGRect)rect width:(CGFloat)width;
+- (instancetype)initWithRect:(CGRect)rect;
 
-+ (instancetype)circleWithRect:(CGRect)rect width:(CGFloat)width;
++ (instancetype)ellipseWithRect:(CGRect)rect;
 
 
 @end

@@ -13,6 +13,7 @@
     CGContextSaveGState(context);
 
     [self addPathForDrawingToContext:context];
+        CGContextSetLineWidth(context, self.width);
 
     if (self.needDrawGradient) {
         CGGradientRef myGradient;
@@ -20,10 +21,10 @@
         size_t num_locations = 2;
         CGFloat locations[2] = {0.0, 1.0};
 
-        UIColor *startColor = self.gradientColor.startColor;
-        UIColor *endColor = self.gradientColor.endColor;
-        CGFloat const *startComponents = CGColorGetComponents([startColor CGColor]);
-        CGFloat const *endComponents = CGColorGetComponents([endColor CGColor]);
+        CGFloat startComponents[4];
+        CGFloat endComponents[4];
+        [self.gradientColor.startColor getRed:&startComponents[0] green:&startComponents[1] blue:&startComponents[2] alpha:&startComponents[3]];
+        [self.gradientColor.endColor getRed:&endComponents[0] green:&endComponents[1] blue:&endComponents[2] alpha:&endComponents[3]];
 
         CGFloat components[8] = {startComponents[0], startComponents[1], startComponents[2], startComponents[3],
                 endComponents[0], endComponents[1], endComponents[2], endComponents[3]
@@ -38,13 +39,20 @@
         CGColorSpaceRelease(myColorspace);
         CGGradientRelease(myGradient);
     } else {
+        if (self.strokeColor) {
+            CGContextSetStrokeColorWithColor(context, self.strokeColor.CGColor);
+        }
         if (self.fillColor) {
             CGContextSetFillColorWithColor(context, self.fillColor.CGColor);
-            CGContextFillPath(context);
         }
-        if (self.strokeColor) {
-            CGContextSetStrokeColorWithColor(context, self.fillColor.CGColor);
-            CGContextStrokePath(context);
+        if (self.strokeColor && self.fillColor) {
+            CGContextDrawPath(context, kCGPathFillStroke);
+        } else {
+            if (self.strokeColor) {
+                CGContextStrokePath(context);
+            } else if (self.fillColor) {
+                CGContextFillPath(context);
+            }
         }
     }
 
@@ -61,20 +69,20 @@
 
 @end
 
-@implementation BLDrawingObjectCircle
+@implementation BLDrawingObjectEllipse
 
-- (instancetype)initWithRect:(CGRect)rect width:(CGFloat)width {
+- (instancetype)initWithRect:(CGRect)rect {
     self = [super init];
     if (self) {
         self.rect = rect;
-        self.width = width;
+        self.width = 0;
     }
 
     return self;
 }
 
-+ (instancetype)circleWithRect:(CGRect)rect width:(CGFloat)width {
-    return [[self alloc] initWithRect:rect width:width];
++ (instancetype)ellipseWithRect:(CGRect)rect {
+    return [[self alloc] initWithRect:rect];
 }
 
 
@@ -98,7 +106,7 @@
 }
 
 + (instancetype)lineWithStartPoint:(CGPoint)startPoint endPoint:(CGPoint)endPoint width:(CGFloat)width {
-    return [[[self alloc] initWithStartPoint:startPoint endPoint:endPoint width:width] autorelease];
+    return [[self alloc] initWithStartPoint:startPoint endPoint:endPoint width:width];
 }
 
 
@@ -138,7 +146,7 @@
 }
 
 + (instancetype)flexibleWithWidth:(CGFloat)width points:(NSArray *)points {
-    return [[[self alloc] initWithWidth:width points:points] autorelease];
+    return [[self alloc] initWithWidth:width points:points];
 }
 
 
@@ -152,9 +160,6 @@
         }
     }
     CGContextClosePath(context);
-    if (self.width) {
-        CGContextSetLineWidth(context, self.width);
-    }
 }
 
 @end

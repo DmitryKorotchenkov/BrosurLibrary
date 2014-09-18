@@ -8,7 +8,8 @@
 @class BLParsedViewDescription;
 @class BLView;
 
-
 @interface BLBuilder : NSObject
-+ (BLView *)qweqwr;
+
++ (BLView *)createViewWithJSON:(NSString *)json;
+
 @end

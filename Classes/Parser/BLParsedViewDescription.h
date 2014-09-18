@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIColor *backgroundColor;
 @property (nonatomic, strong) BLGradientColor *backgroundGradientColor;
 @property (nonatomic) CGRect frame;
+@property (nonatomic, strong) NSArray *drawingObjects;
 
 @property (nonatomic, strong) NSArray *subviewsDescription;
 

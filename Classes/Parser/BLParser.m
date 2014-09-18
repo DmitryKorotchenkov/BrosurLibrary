@@ -10,6 +10,7 @@
 #import "BLParsedTextViewDescription.h"
 #import "BLEllipsePath.h"
 #import "BLPointsPath.h"
+#import "BLDrawingObject.h"
 
 
 @implementation BLParser
@@ -37,6 +38,7 @@
                                                backgroundGradientColor:backgroundGradient
                                                                  frame:frame];
     }
+    viewDescription.drawingObjects = [self getDrawingObjects:dictionary[@"drawing"]];
     NSArray *subviews = dictionary[@"subviews"];
     if (subviews && [subviews isKindOfClass:[NSArray class]] && subviews.count) {
         NSMutableArray *array = [NSMutableArray new];
@@ -141,6 +143,45 @@
                            green:((float) g / 255.0f)
                             blue:((float) b / 255.0f)
                            alpha:((float) a / 255.0f)];
+}
+
+- (NSArray *)getDrawingObjects:(NSArray *)array {
+    if (array.count) {
+        NSMutableArray *returnArray = [NSMutableArray new];
+        for (NSDictionary *drawingObject in array) {
+            BLDrawingObject *object;
+            NSString *type = [drawingObject[@"type"] lowercaseString];
+            CGFloat width = [self getFloat:drawingObject[@"width"]];
+            if ([type isEqualToString:@"ellipse"]) {
+                BLDrawingObjectEllipse *ellipse = [BLDrawingObjectEllipse ellipseWithRect:[self getFrame:drawingObject[@"rect"]]];
+                ellipse.width = width;
+                object = ellipse;
+            } else if ([type isEqualToString:@"line"]) {
+                object = [BLDrawingObjectLine lineWithStartPoint:[self getPoint:drawingObject[@"startPoint"]]
+                                                        endPoint:[self getPoint:drawingObject[@"endPoint"]]
+                                                           width:width];
+
+            } else if ([type isEqualToString:@"flexible"]) {
+                NSArray *points = drawingObject[@"points"];
+                NSMutableArray *parsedPoints = [NSMutableArray new];
+                for (NSDictionary *point in point) {
+                    CGPoint cgPoint = [self getPoint:point];
+                    [parsedPoints addObject:[NSValue valueWithCGPoint:cgPoint]];
+                }
+                object = [BLDrawingObjectFlexible flexibleWithWidth:width points:parsedPoints];
+            }
+            if (object) {
+                object.gradientColor = [self getGradient:drawingObject[@"gradientColor"]];
+                object.fillColor = [self getColorFromString:drawingObject[@"fillColor"]];
+                object.strokeColor = [self getColorFromString:drawingObject[@"strokeColor"]];
+                [returnArray addObject:object];
+            }
+        }
+        if (returnArray.count) {
+            return [NSArray arrayWithArray:returnArray];
+        }
+    }
+    return nil;
 }
 
 - (CGRect)getFrame:(NSDictionary *)frameDescription {

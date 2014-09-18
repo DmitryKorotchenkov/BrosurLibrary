@@ -13,17 +13,11 @@
 
 @implementation BLBuilder
 
-+ (NSString *)asda {
-//    return @"{\"type\":\"view\",\"frame\":{\"x\":0,\"y\":0,\"w\":320,\"h\":480},\"background\":\"0xAAAAAAFF\",\"subviews\":[{\"type\":\"textView\",\"text\":[{\"color\":\"0xFF0000FF\",\"text\":\"abcd \"},{\"color\":\"0x000000FF\",\"text\":\"abcd d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d   d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d d \"}],\"clippingPaths\":{\"ellipses\":[{\"x\":100,\"y\":300,\"w\":100,\"h\":100},{\"x\":100,\"y\":170,\"w\":100,\"h\":100}],\"lines\":[\"20:20-200:40-220:100-100:100-50:80\"]},\"background\":\"0xBBBBBBFF\",\"frame\":{\"x\":20,\"y\":20,\"w\":300,\"h\":400}},{\"type\":\"view\",\"frame\":{\"x\":0,\"y\":0,\"w\":280,\"h\":20},\"backgroundGradient\":{\"startColor\":\"0x00FF00FF\",\"endColor\":\"0xFF0000FF\",\"startPoint\":{\"x\":0,\"y\":0},\"endPoint\":{\"x\":0,\"y\":20}}},{\"type\":\"view\",\"frame\":{\"x\":0,\"y\":20,\"w\":20,\"h\":240},\"backgroundGradient\":{\"startColor\":\"0x00FF00FF\",\"endColor\":\"0xFF0000FF\",\"startPoint\":{\"x\":0,\"y\":0},\"endPoint\":{\"x\":20,\"y\":0}}},{\"type\":\"view\",\"frame\":{\"x\":260,\"y\":20,\"w\":20,\"h\":240},\"backgroundGradient\":{\"startColor\":\"0x00FF00FF\",\"endColor\":\"0xFF0000FF\",\"startPoint\":{\"x\":20,\"y\":0},\"endPoint\":{\"x\":0,\"y\":0}}},{\"type\":\"view\",\"frame\":{\"x\":0,\"y\":260,\"w\":280,\"h\":20},\"backgroundGradient\":{\"startColor\":\"0x00FF00FF\",\"endColor\":\"0xFF0000FF\",\"startPoint\":{\"x\":0,\"y\":0},\"endPoint\":{\"x\":0,\"y\":20}}}]}";
-    return @"{\"type\":\"view\",\"frame\":{\"x\":0,\"y\":0,\"w\":320,\"h\":480},\"background\":\"0xAAAAAAFF\"}";
-}
-
-+ (BLView *)qweqwr {
-    NSData *data = [[self asda] dataUsingEncoding:NSUTF8StringEncoding];
++(BLView *)createViewWithJSON:(NSString *)json {
+    NSData *data = [json dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
     BLParser *parser = [BLParser new];
     BLParsedViewDescription *description = [parser parse:dictionary];
-    NSLog(@"%@", dictionary);
     return [self createView:description];
 }
 
@@ -39,6 +33,7 @@
     } else {
         view = [[BLView alloc] init];
     }
+    view.drawingObjects = description.drawingObjects;
 
     view.backgroundColor = description.backgroundColor;
     if (description.backgroundGradientColor) {

@@ -10,26 +10,6 @@
 
 @implementation BLView
 
-- (id)init {
-    self = [super init];
-    if (self) {
-        BLDrawingObjectCircle *circle = [BLDrawingObjectCircle circleWithRect:CGRectMake(50, 50, 100, 100) width:10];
-
-        CGFloat startX = CGRectGetMinX(circle.rect);
-        CGFloat startY = CGRectGetMinY(circle.rect);
-        CGFloat endX = CGRectGetMaxX(circle.rect);
-        CGFloat endY = CGRectGetMaxY(circle.rect);
-//        circle.gradientColor = [BLGradientColor colorWithStartColor:[UIColor redColor] endColor:[UIColor blueColor] startPoint:CGPointMake(startX, startY) endPoint:CGPointMake(endX, endY)];
-        circle.fillColor = [UIColor redColor];
-        circle.strokeColor = [UIColor greenColor];
-
-        self.drawingObjects = @[circle];
-    }
-
-    return self;
-}
-
-
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
 
