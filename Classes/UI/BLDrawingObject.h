@@ -56,3 +56,17 @@
 
 
 @end
+
+@interface BLDrawingObjectText :BLDrawingObject
+
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) UIFont *font;
+@property (nonatomic, strong) UIColor *textColor;
+@property (nonatomic) CGPoint point;
+
+- (instancetype)initWithText:(NSString *)text font:(UIFont *)font;
+
++ (instancetype)textWithText:(NSString *)text font:(UIFont *)font;
+
+- (CGSize)size;
+@end

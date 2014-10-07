@@ -3,6 +3,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreText/CoreText.h>
 #import "BLDrawingObject.h"
 #import "BLGradientColor.h"
 
@@ -13,7 +14,8 @@
     CGContextSaveGState(context);
 
     [self addPathForDrawingToContext:context];
-        CGContextSetLineWidth(context, self.width);
+    CGContextSetLineWidth(context, self.width);
+    CGContextSetShouldAntialias(context, YES);
 
     if (self.needDrawGradient) {
         CGGradientRef myGradient;
@@ -127,7 +129,6 @@
     } else {
         CGContextMoveToPoint(context, self.startPoint.x, self.startPoint.y);
         CGContextAddLineToPoint(context, self.endPoint.x, self.endPoint.y);
-        CGContextSetLineWidth(context, self.width);
     }
 }
 
@@ -160,6 +161,36 @@
         }
     }
     CGContextClosePath(context);
+}
+
+@end
+
+@implementation BLDrawingObjectText
+
+- (instancetype)initWithText:(NSString *)text font:(UIFont *)font {
+    self = [super init];
+    if (self) {
+        self.text = text;
+        self.font = font;
+    }
+
+    return self;
+}
+
++ (instancetype)textWithText:(NSString *)text font:(UIFont *)font {
+    return [[self alloc] initWithText:text font:font];
+}
+
+
+- (CGSize)size {
+    NSDictionary *attrs = @{NSFontAttributeName : self.font};
+    return [self.text sizeWithAttributes:attrs];
+}
+
+- (void)drawInContext:(CGContextRef)context {
+    UIColor *color = self.textColor ?: [UIColor blueColor];
+    NSDictionary *attrs = @{NSFontAttributeName : self.font, NSForegroundColorAttributeName : color};
+    [self.text drawAtPoint:self.point withAttributes:attrs];
 }
 
 @end

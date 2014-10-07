@@ -12,8 +12,11 @@
 
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
-
     CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextClearRect(context, rect);
+    CGContextSetFillColorWithColor(context, self.backgroundColor.CGColor);
+    CGContextFillRect(context, rect);
+
     if (self.backgroundGradient) {
         size_t num_locations = 2;
         CGFloat locations[2] = {0.0, 1.0};
